@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Rice Disease Detection System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur shadow">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold text-emerald-700">🌾 AI RiceCare</h1>
+    <div class="space-x-6 font-semibold">
+      <a href="#home">Home</a>
+      <a href="#detect">Detection</a>
+      <a href="#suggestion">Suggestion</a>
+      <a href="#details">Details</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="h-20"></div>
+
+<!-- HOME -->
+<section id="home" class="relative h-[90vh] w-full bg-center bg-cover flex items-center"
+style="background-image:url('/static/rice_bg.jpg')">
+<div class="absolute inset-0 bg-black/50"></div>
+
+<div class="relative z-10 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+  <div>
+    <h1 class="text-5xl font-extrabold text-white leading-tight">
+      AI-Powered Rice Disease Detection
+    </h1>
+    <p class="mt-4 text-lg text-gray-200">
+      Detect disease, severity, yield loss and get AI-based treatment.
+    </p>
+    <a href="#detect" class="inline-block mt-6 bg-emerald-600 hover:bg-emerald-700
+        text-white px-8 py-3 rounded-full font-bold transition shadow-lg">
+      🌾 Start Detection
+    </a>
+  </div>
+
+  <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json"
+    background="transparent" speed="1" loop autoplay class="w-80 h-80">
+  </lottie-player>
+</div>
+</section>
+
+<!-- IMAGE CARDS -->
+<section class="max-w-6xl mx-auto -mt-24 grid md:grid-cols-3 gap-8 px-6">
+  <div class="bg-white p-4 rounded-2xl shadow hover:scale-105 transition">
+    <img src="/static/leaf1.jpg" class="rounded-xl">
+    <h3 class="mt-3 font-bold text-green-700">Early Detection</h3>
+  </div>
+  <div class="bg-white p-4 rounded-2xl shadow hover:scale-105 transition">
+    <img src="/static/leaf2.jpg" class="rounded-xl">
+    <h3 class="mt-3 font-bold text-green-700">AI Treatment</h3>
+  </div>
+  <div class="bg-white p-4 rounded-2xl shadow hover:scale-105 transition">
+    <img src="/static/leaf3.jpg" class="rounded-xl">
+    <h3 class="mt-3 font-bold text-green-700">Yield Protection</h3>
+  </div>
+</section>
+
+<!-- DETECTION -->
+<section id="detect" class="max-w-4xl mx-auto mt-20 bg-white p-10 rounded-3xl shadow">
+<h2 class="text-3xl font-bold text-center text-emerald-700 mb-6">
+🔍 AI Disease Analysis
+</h2>
+
+<form action="/predict" method="post" enctype="multipart/form-data" class="text-center">
+<label class="block w-full h-48 border-2 border-dashed border-emerald-400 rounded-2xl cursor-pointer">
+<div class="flex flex-col justify-center items-center h-full">
+<span class="text-6xl">📷</span>
+<p class="font-semibold text-emerald-700">Upload Rice Leaf</p>
+</div>
+<input type="file" name="file" class="hidden" required onchange="previewImage(event)">
+</label>
+
+<img id="preview" class="hidden mx-auto mt-4 max-h-52 rounded-xl shadow">
+
+<button class="mt-6 bg-emerald-600 text-white px-10 py-3 rounded-full font-bold">
+🧠 Analyze
+</button>
+</form>
+
+{% if disease %}
+<div class="mt-10 grid md:grid-cols-2 gap-6">
+  <div class="bg-green-50 p-6 rounded-2xl shadow">
+    <h3 class="font-bold text-xl">🌿 Disease</h3>
+    <p>{{ disease }} ({{ tamil_name }})</p>
+  </div>
+  <div class="bg-red-50 p-6 rounded-2xl shadow">
+    <h3 class="font-bold text-xl">⚠ Severity</h3>
+    <span class="font-semibold">{{ severity }}</span>
+  </div>
+</div>
+
+<div class="mt-6 bg-emerald-100 p-6 rounded-2xl shadow">
+  <h3 class="font-bold text-xl">🌾 Yield Impact</h3>
+  <p>{{ yield_percent }}</p>
+  <p>{{ yield_loss }}</p>
+  <p>{{ yield_message }}</p>
+</div>
+
+<div class="mt-6 bg-white p-6 rounded-2xl shadow">
+  <p id="treatment_en"><b>Treatment:</b> {{ treatment }}</p>
+  <p id="fertilizer_en"><b>Fertilizer:</b> {{ fertilizer }}</p>
+  <p id="treatment_ta" class="hidden"><b>சிகிச்சை:</b> {{ treatment_tamil }}</p>
+  <p id="fertilizer_ta" class="hidden"><b>உரம்:</b> {{ fertilizer_tamil }}</p>
+
+  <button onclick="toggleLanguage()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full">
+    🌐 Tamil / English
+  </button>
+</div>
+{% endif %}
+</section>
+
+<!-- SUGGESTION -->
+<section id="suggestion" class="max-w-6xl mx-auto mt-20 bg-green-50 p-10 rounded-3xl shadow">
+<h2 class="text-3xl font-bold text-emerald-700 mb-6">🌱 Suggestions</h2>
+<ul class="space-y-3">
+ 
+<section class="max-w-6xl mx-auto px-6 py-12">
+  <h2 class="text-3xl font-bold text-green-700 mb-8 text-center">
+    🌾 Rice Cultivation Suggestions | நெல் சாகுபடி ஆலோசனைகள்
+  </h2>
+
+  <!-- Soil Preparation -->
+  <div class="bg-white shadow-lg rounded-2xl p-6 mb-8">
+    <h3 class="text-2xl font-semibold text-green-600 mb-4">
+      🌱 Soil Preparation | மண் தயாரிப்பு
+    </h3>
+    <ul class="list-disc list-inside space-y-2 text-gray-700">
+      <li>
+        Choose clay or loamy soil with good water retention.  
+        <span class="text-sm text-gray-500">(நீர் பிடிக்கும் களிமண் அல்லது மணல்-களிமண் மண் தேர்வு செய்யவும்)</span>
+      </li>
+      <li>
+        Maintain soil pH between 5.5 – 7.0.  
+        <span class="text-sm text-gray-500">(மண்ணின் pH அளவு 5.5 – 7.0 இருக்க வேண்டும்)</span>
+      </li>
+      <li>
+        Plough land 2–3 times and level properly.  
+        <span class="text-sm text-gray-500">(நிலத்தை 2–3 முறை உழுது சமப்படுத்தவும்)</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Seed Selection -->
+  <div class="bg-white shadow-lg rounded-2xl p-6 mb-8">
+    <h3 class="text-2xl font-semibold text-green-600 mb-4">
+      🌾 Seed Selection | விதை தேர்வு
+    </h3>
+    <ul class="list-disc list-inside space-y-2 text-gray-700">
+      <li>
+        Use certified, disease-resistant seeds.  
+        <span class="text-sm text-gray-500">(நோய் எதிர்ப்பு கொண்ட சான்றளிக்கப்பட்ட விதைகள் பயன்படுத்தவும்)</span>
+      </li>
+      <li>
+        Soak seeds for 24 hours before sowing.  
+        <span class="text-sm text-gray-500">(விதைகளை 24 மணி நேரம் ஊறவைக்கவும்)</span>
+      </li>
+      <li>
+        Recommended varieties: ADT, CO, IR series.  
+        <span class="text-sm text-gray-500">(ADT, CO, IR வகைகள் பரிந்துரைக்கப்படுகிறது)</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Water Management -->
+  <div class="bg-white shadow-lg rounded-2xl p-6 mb-8">
+    <h3 class="text-2xl font-semibold text-green-600 mb-4">
+      💧 Water Management | நீர் மேலாண்மை
+    </h3>
+    <ul class="list-disc list-inside space-y-2 text-gray-700">
+      <li>
+        Maintain 2–5 cm water level during early growth.  
+        <span class="text-sm text-gray-500">(ஆரம்ப வளர்ச்சியில் 2–5 செ.மீ நீர் நிலை பராமரிக்கவும்)</span>
+      </li>
+      <li>
+        Avoid continuous flooding to prevent root damage.  
+        <span class="text-sm text-gray-500">(தொடர்ச்சியான நீர் தேக்கத்தை தவிர்க்கவும்)</span>
+      </li>
+      <li>
+        Drain water 10–15 days before harvest.  
+        <span class="text-sm text-gray-500">(அறுவடைக்கு 10–15 நாட்களுக்கு முன் நீரை வெளியேற்றவும்)</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Fertilizer Management -->
+  <div class="bg-white shadow-lg rounded-2xl p-6 mb-8">
+    <h3 class="text-2xl font-semibold text-green-600 mb-4">
+      🧪 Fertilizer Management | உர மேலாண்மை
+    </h3>
+    <ul class="list-disc list-inside space-y-2 text-gray-700">
+      <li>
+        Apply NPK fertilizers in split doses.  
+        <span class="text-sm text-gray-500">(NPK உரங்களை கட்டங்களாக பயன்படுத்தவும்)</span>
+      </li>
+      <li>
+        Use organic manure like compost or FYM.  
+        <span class="text-sm text-gray-500">(கம்போஸ்ட் அல்லது மாட்டுச் சாணம் பயன்படுத்தவும்)</span>
+      </li>
+      <li>
+        Avoid excess nitrogen to reduce pest attacks.  
+        <span class="text-sm text-gray-500">(அதிக நைட்ரஜன் பூச்சி தாக்கத்தை அதிகரிக்கும்)</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Disease Prevention -->
+  <div class="bg-white shadow-lg rounded-2xl p-6">
+    <h3 class="text-2xl font-semibold text-green-600 mb-4">
+      🦠 Disease Prevention | நோய் தடுப்பு
+    </h3>
+    <ul class="list-disc list-inside space-y-2 text-gray-700">
+      <li>
+        Monitor crops regularly for early symptoms.  
+        <span class="text-sm text-gray-500">(ஆரம்ப அறிகுறிகளுக்காக பயிரை கண்காணிக்கவும்)</span>
+      </li>
+      <li>
+        Remove infected plants immediately.  
+        <span class="text-sm text-gray-500">(நோய் பாதித்த செடிகளை உடனே அகற்றவும்)</span>
+      </li>
+      <li>
+        Use recommended bio-pesticides when possible.  
+        <span class="text-sm text-gray-500">(உயிரியல் பூச்சிக்கொல்லிகள் பயன்படுத்தவும்)</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+</ul>
+</section>
+
+<!-- DETAILS -->
+<section id="details" class="max-w-6xl mx-auto mt-20 bg-white p-10 rounded-3xl shadow">
+<h2 class="text-3xl font-bold text-emerald-700 mb-6">📘 Details</h2>
+<section class="max-w-6xl mx-auto px-6 py-12 bg-white rounded-3xl shadow-lg">
+
+<h2 class="text-3xl font-bold text-green-700 mb-6 text-center">
+🌿 Rice Leaf Diseases – Causes & Remedies
+</h2>
+
+<ul class="list-disc list-inside space-y-6 text-gray-800">
+
+<li>
+<b>Bacterial Leaf Blight (பாக்டீரியா இலை கருகல்)</b>
+<ul class="list-disc list-inside ml-6">
+<li><b>Cause:</b> Xanthomonas oryzae bacteria spreads in humid climate and stagnant water.</li>
+<li><b>Remedy:</b> Remove infected plants, improve drainage, spray copper oxychloride.</li>
+
+<li><b>காரணம்:</b> அதிக ஈரப்பதம் மற்றும் நீர் தேக்கம் காரணமாக பாக்டீரியா தாக்கம் ஏற்படுகிறது.</li>
+<li><b>தீர்வு:</b> பாதிக்கப்பட்ட செடிகளை அகற்றவும், நல்ல வடிகால் அமைக்கவும், காப்பர் மருந்து தெளிக்கவும்.</li>
+</ul>
+</li>
+
+<li>
+<b>Leaf Blast (இலை வெடிப்பு நோய்)</b>
+<ul class="list-disc list-inside ml-6">
+<li><b>Cause:</b> Fungal infection due to excess nitrogen and cloudy weather.</li>
+<li><b>Remedy:</b> Avoid excess urea, use Tricyclazole fungicide.</li>
+
+<li><b>காரணம்:</b> அதிக யூரியா உரம் மற்றும் மேகமூட்டமான காலநிலை.</li>
+<li><b>தீர்வு:</b> அதிக உரம் தவிர்க்கவும், டிரைசைக்கிளசோல் மருந்து பயன்படுத்தவும்.</li>
+</ul>
+</li>
+
+<li>
+<b>Brown Spot (பழுப்பு புள்ளி நோய்)</b>
+<ul class="list-disc list-inside ml-6">
+<li><b>Cause:</b> Nutrient deficiency and poor soil health.</li>
+<li><b>Remedy:</b> Balanced fertilizer, Mancozeb spray.</li>
+
+<li><b>காரணம்:</b> மண் சத்து குறைபாடு.</li>
+<li><b>தீர்வு:</b> சரியான உர மேலாண்மை, மான்கோசெப் தெளிப்பு.</li>
+</ul>
+</li>
+
+</ul>
+</section>
+<section class="max-w-6xl mx-auto px-6 py-12 bg-green-50 rounded-3xl shadow-lg">
+
+<h2 class="text-3xl font-bold text-emerald-700 mb-6 text-center">
+🌱 Fertilizer Details for Rice
+</h2>
+
+<ul class="list-disc list-inside space-y-4 text-gray-800">
+
+<li>
+<b>Nitrogen (N):</b> 120 kg/ha split into 3 stages (Basal, Tillering, Panicle).
+<br>
+<b>நைட்ரஜன்:</b> மூன்று கட்டங்களாக அளிக்க வேண்டும்.
+</li>
+
+<li>
+<b>Phosphorus (P):</b> 40 kg/ha at planting stage.
+<br>
+<b>பாஸ்பரஸ்:</b> விதைப்பின் போது அளிக்க வேண்டும்.
+</li>
+
+<li>
+<b>Potassium (K):</b> Improves grain quality and disease resistance.
+<br>
+<b>பொட்டாசியம்:</b> நோய் எதிர்ப்பு சக்தியை அதிகரிக்கும்.
+</li>
+
+<li>
+<b>Organic Manure:</b> FYM or compost improves soil fertility.
+<br>
+<b>இயற்கை உரம்:</b> மண் வளத்தை மேம்படுத்துகிறது.
+</li>
+
+<li>
+<b>Soil Health Card:</b> Use soil test recommendations.
+<br>
+<b>மண் ஆரோக்கிய அட்டை:</b> மண் பரிசோதனை அடிப்படையில் உரம் பயன்படுத்தவும்.
+</li>
+
+</ul>
+</section>
+<section class="max-w-6xl mx-auto px-6 py-12 bg-white rounded-3xl shadow-lg">
+
+<h2 class="text-3xl font-bold text-indigo-700 mb-6 text-center">
+🏛️ Government Schemes – India
+</h2>
+
+<ul class="list-disc list-inside space-y-4 text-gray-800">
+
+<li>
+<b>PM-KISAN:</b> ₹6,000 per year income support.
+<br>
+<b>பிஎம்-கிசான்:</b> வருடத்திற்கு ₹6,000 உதவி.
+</li>
+
+<li>
+<b>PM Fasal Bima Yojana:</b> Crop insurance against natural calamities.
+<br>
+<b>பிரதான் மந்திரி பயிர் காப்பீடு:</b> இயற்கை பேரழிவுகளுக்கு பாதுகாப்பு.
+</li>
+
+<li>
+<b>Soil Health Card Scheme:</b> Soil testing and fertilizer guidance.
+<br>
+<b>மண் ஆரோக்கிய அட்டை:</b> உர மேலாண்மை வழிகாட்டுதல்.
+</li>
+
+</ul>
+</section>
+<section class="max-w-6xl mx-auto px-6 py-12 bg-indigo-50 rounded-3xl shadow-lg">
+
+<h2 class="text-3xl font-bold text-indigo-800 mb-6 text-center">
+🌿 Tamil Nadu Government Schemes
+</h2>
+
+<ul class="list-disc list-inside space-y-4 text-gray-800">
+
+<li>
+<b>e-Paddy Procurement:</b> Online paddy registration at MSP.
+<br>
+<b>இ-நெல் கொள்முதல்:</b> குறைந்தபட்ச ஆதரவு விலை.
+</li>
+
+<li>
+<b>Free Electricity for Agriculture:</b> 100% free power.
+<br>
+<b>இலவச மின்சாரம்:</b> விவசாயிகளுக்கு முழுமையான இலவசம்.
+</li>
+
+<li>
+<b>Farm Equipment Subsidy:</b> Up to 70% subsidy.
+<br>
+<b>விவசாய உபகரண மானியம்:</b> 70% வரை.
+</li>
+
+<li>
+<b>Kudimaramathu Scheme:</b> Water body restoration.
+<br>
+<b>குடிமராமத்து:</b> ஏரி, கால்வாய் சீரமைப்பு.
+</li>
+
+</ul>
+</section>
+
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="max-w-6xl mx-auto mt-20 mb-20 bg-emerald-700 text-white p-10 rounded-3xl shadow">
+<h2 class="text-3xl font-bold mb-4">📞 Contact</h2>
+<p>Email: aicropcare@gmail.com</p>
+<p>Location: Tamil Nadu</p>
+</section>
+
+<script>
+function previewImage(e){
+  const img=document.getElementById("preview");
+  img.src=URL.createObjectURL(e.target.files[0]);
+  img.classList.remove("hidden");
+}
+function toggleLanguage(){
+  ["treatment_en","fertilizer_en","treatment_ta","fertilizer_ta"]
+  .forEach(id=>document.getElementById(id).classList.toggle("hidden"));
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+a.onclick=e=>{
+e.preventDefault();
+document.querySelector(a.getAttribute("href"))
+.scrollIntoView({behavior:"smooth"});
+}});
+</script>
+
+</body>
+</html>
